@@ -31,6 +31,13 @@ matches <- page %>%
            html_text2() %>% 
            readr::parse_integer()
 
+# Points
+
+points <- page %>% 
+  html_nodes("[class='pts']") %>%
+  html_text2() %>% 
+  readr::parse_integer()
+
 # Wins:
 
 wins <- page %>% 
@@ -68,7 +75,7 @@ goal_diff <- page %>%
 
 ### Create Bundesliga dataframe:
 
-bundes_df <- data.frame(Rank = team_rank, Team = teams, 
+bundes_df <- data.frame(Rank = team_rank, Team = teams, Points = points,
                         Played = matches, Wins = wins, Draws = draws,
                         Losses = losses, Goals = goals, 
                         Goal_Difference = goal_diff)
