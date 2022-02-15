@@ -70,7 +70,7 @@ epl_table <- data.frame(
 
 head(epl_table, 10)
 
-### Save Raw data Dataframe as Excel File:
+### Save data Dataframe as Excel File:
 
 library(writexl)
 
