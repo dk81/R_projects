@@ -52,4 +52,4 @@ ligue_one_df <- data.frame(
 head(ligue_one_df, 10)
 
 ## Save Serie A raw data Table Into A .csv file.
-write.csv(ligue_one_df, paste("LigueOne_Football_Table_", Sys.Date(), sep = ""))
+write.csv(ligue_one_df, paste("LigueOne_Football_Table_", Sys.Date(), '.csv', sep = ""))
