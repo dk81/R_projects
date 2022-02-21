@@ -51,4 +51,4 @@ serieA_df <- data.frame(Rank = seq(1, 20),
 head(serieA_df, 8)
 
 ## Save Serie A raw data Table Into A .csv file.
-write.csv(serieA_df, paste("SerieA_Football_Table_", Sys.Date(), sep = ""))
+write.csv(serieA_df, paste("SerieA_Football_Table_", Sys.Date(), '.csv', sep = ""))
