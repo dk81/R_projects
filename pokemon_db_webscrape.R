@@ -1,4 +1,11 @@
-# Pokemon Table from Pokemondb Webscarping In R
+# Pokemon Table from Pokemondb Webscraping In R
+
+# Load libraries:
+library(rvest)
+library(dplyr)
+library(tidyr)
+library(stringr)
+
 
 poke_url <- "https://pokemondb.net/pokedex/all"
 
@@ -20,41 +27,61 @@ pokemon[1046] %>% html_elements('td')
 
 ## Extract Pokemon Number:
 
-poke_num <- pokemon %>% html_elements('span.infocard-cell-data') %>% html_text2()
+poke_num <- pokemon %>% 
+            html_elements('span.infocard-cell-data') %>% 
+            html_text2() %>%
+            readr::parse_integer()
 
-## Extract Pokemon Name:
+## Extract Pokemon Name & Remove \n tag:
 name <- pokemon %>% html_elements('td.cell-name')  %>% html_text2()
-
-# Remove \n tag:
 name <- gsub('[\n]', ' ', name)
 
-## Pokemon Type:
+## Pokemon Type & Remove \n tag and trim whitespace on the right.
 type <- pokemon %>% html_elements('td.cell-icon')  %>% html_text2()
-
-# Remove \n tag and trim whitespace on the right.
 type <- gsub('[\n]', ' ', type) 
 type <- trimws(type, which = "right")
 
 ## Total Stats:
-total_stats <- pokemon %>% html_elements('td.cell-total')  %>% html_text2()
+total_stats <- pokemon %>% 
+               html_elements('td.cell-total') %>% 
+               html_text2() %>%
+               readr::parse_integer()
 
-## HP, Seq filtering needed as Attack, Def, Sp Attk, Sp Def and Speed all share the class cell-num in td tag.
-hp <- pokemon %>% html_elements('td.cell-num')  %>% .[seq(2, length(pokemon) * 7, 7)] %>% html_text2()
+## HP found in tbody/tr/td[5], I use xpath here.
+hp <- pokemon %>% 
+      html_nodes(xpath='//*[@id="pokedex"]/tbody/tr/td[5]') %>%
+      html_text2() %>%
+      readr::parse_integer()
 
 ## Attack:
-attack <- pokemon %>% html_elements('td.cell-num')  %>% .[seq(3, length(pokemon) * 7 , 7)] %>% html_text2()
+attack <- pokemon %>% 
+          html_nodes(xpath='//*[@id="pokedex"]/tbody/tr/td[6]') %>%
+          html_text2() %>%
+          readr::parse_integer()
 
 ## Defense:
-defense <- pokemon %>% html_elements('td.cell-num')  %>% .[seq(4, length(pokemon) * 7 , 7)] %>% html_text2()
+defense <- pokemon %>% 
+          html_nodes(xpath='//*[@id="pokedex"]/tbody/tr/td[7]') %>%
+          html_text2() %>%
+          readr::parse_integer()
 
 ## Special Attack:
-sp_atk <- pokemon %>% html_elements('td.cell-num')  %>% .[seq(5, length(pokemon) * 7 , 7)] %>% html_text2()
+sp_atk <- pokemon %>% 
+          html_nodes(xpath='//*[@id="pokedex"]/tbody/tr/td[8]') %>%
+          html_text2() %>%
+          readr::parse_integer()
 
 ## Special Defense:
-sp_def <- pokemon %>% html_elements('td.cell-num')  %>% .[seq(6, length(pokemon) * 7 , 7)] %>% html_text2()
+sp_atk <- pokemon %>% 
+          html_nodes(xpath='//*[@id="pokedex"]/tbody/tr/td[9]') %>%
+          html_text2() %>%
+          readr::parse_integer()
 
 ## Speed
-speed <- pokemon %>% html_elements('td.cell-num')  %>% .[seq(7, length(pokemon) * 7 , 7)] %>% html_text2()
+speed <- pokemon %>% 
+         html_nodes(xpath='//*[@id="pokedex"]/tbody/tr/td[10]') %>%
+         html_text2() %>%
+         readr::parse_integer()
 
 #---------
 
