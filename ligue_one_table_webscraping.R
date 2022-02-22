@@ -11,41 +11,79 @@ library(stringr)
 # URL from Ligue 1 website
 ligue_one_url <- read_html("https://www.ligue1.com/ranking")
 
-# Table, class as classement-table-body:
-ligue_one_table <- ligue_one_url %>% 
-              html_nodes("[class='classement-table-body']") 
+# Ranks:
+ranks <- ligue_one_url %>% 
+         html_nodes(xpath='//*[@class="classement-table-body"]/ul/li/a/div[1]') %>%
+         html_text2() %>%
+         readr::parse_integer()
+
+# Teams:
+teams <- ligue_one_url %>% 
+         html_nodes(xpath='//*[@class="classement-table-body"]/ul/li/a/div[2]/span[1]') %>%
+         html_text2()
+
+# Points:
+points <- ligue_one_url %>% 
+          html_nodes(xpath='//*[@class="classement-table-body"]/ul/li/a/div[3]') %>%
+          html_text2() %>%
+          readr::parse_integer()
+
+# Played
+played <- ligue_one_url %>% 
+          html_nodes(xpath='//*[@class="classement-table-body"]/ul/li/a/div[4]') %>%
+          html_text2() %>%
+          readr::parse_integer()
+
+# Wins
+wins <- ligue_one_url %>% 
+          html_nodes(xpath='//*[@class="classement-table-body"]/ul/li/a/div[5]') %>%
+          html_text2() %>%
+          readr::parse_integer()
+
+# Draws
+draws <- ligue_one_url %>% 
+         html_nodes(xpath='//*[@class="classement-table-body"]/ul/li/a/div[6]') %>%
+         html_text2() %>%
+         readr::parse_integer()
+
+# Losses
+losses <- ligue_one_url %>% 
+          html_nodes(xpath='//*[@class="classement-table-body"]/ul/li/a/div[7]') %>%
+          html_text2() %>%
+          readr::parse_integer()
+
+# Goals For
+goals_for <- ligue_one_url %>% 
+             html_nodes(xpath='//*[@class="classement-table-body"]/ul/li/a/div[8]') %>%
+             html_text2() %>%
+             readr::parse_integer()
+
+# Goals Against
+goals_against <- ligue_one_url %>% 
+                 html_nodes(xpath='//*[@class="classement-table-body"]/ul/li/a/div[9]') %>%
+                 html_text2() %>%
+                 readr::parse_integer()
 
 
-# Class names for ranks, teams, points, won, drawn, lost, gf, ga, diff are not really unique.
-# Have to do this approach where I use filtering and sequencing based on the div tags data.
-table_data <- ligue_one_table %>% 
-              html_elements('li') %>% 
-              html_elements('div') %>% 
-              html_text2()
+# Goal Difference
+goals_diff <- ligue_one_url %>% 
+              html_nodes(xpath='//*[@class="classement-table-body"]/ul/li/a/div[10]') %>%
+              html_text2() %>%
+              readr::parse_integer()
 
-# Table data is a large list that has the sequence of Position, Team, Points, Played, Won, 
-# Drawn, Lost, Goals For, Goals Against, Diff, Form (not needed):
-# I extract the team name using the corresponding class name, 
-# the rest of the table data do not really have class names so I filter from table_data
-
-# Create dataframe:
+### Create dataframe:
 
 ligue_one_df <- data.frame(
-                Rank = table_data[seq(1, length(table_data), 11)],
-                Team = ligue_one_table %>% 
-                       html_nodes("[class='GeneralStats-clubName desktop-item']") %>%
-                       html_text2(),
-                Points = ligue_one_table %>% 
-                         html_nodes("[class='GeneralStats-item GeneralStats-item--points']") %>%
-                         html_text2() %>% 
-                         readr::parse_integer(),
-                Played = table_data[seq(4, length(table_data), 11)],
-                Wins = table_data[seq(5, length(table_data), 11)],
-                Draws = table_data[seq(6, length(table_data), 11)],
-                Losses = table_data[seq(7, length(table_data), 11)],
-                Goals_For = table_data[seq(8, length(table_data), 11)],
-                Goals_Against = table_data[seq(9, length(table_data), 11)],
-                Goal_Diff = table_data[seq(10, length(table_data), 11)]
+  Rank = ranks,
+  Team = teams,
+  Points = points,
+  Played = played,
+  Wins = wins,
+  Draws = draws,
+  Losses = losses,
+  Goals_For = goals_for,
+  Goals_Against = goals_against,
+  Goal_Diff = goals_diff
 )
 
 # Current Top 10 teams in Ligue One
