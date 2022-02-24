@@ -15,18 +15,15 @@ page <- read_html("https://www.tradingview.com/markets/stocks-usa/market-movers-
 
 table <- page %>% html_element('tbody')
 
-# Top 100 Large cap USA stocks
-stocks_data <- table %>% html_nodes('td') %>% html_text2()
+# Company Name:
+name <- table %>% html_nodes(xpath = '//*[@class = "tv-screener__description"]') %>% html_text2()
 
 # Stock Tickers:
-tickers <- table %>% html_elements('a') %>% html_text2() 
+tickers <- table %>% html_nodes(xpath = '//*[@class = "tv-screener__symbol"]') %>% html_text2() 
 tickers <- tickers[seq(1, length(tickers), 2)]
 
-# Company Name:
-name <- table %>% html_nodes("[class='tv-screener__description']") %>% html_text2()
-
 # Company Sector:
-sector <- table %>% html_elements('a') %>% html_text2() 
+sector <- table %>% html_nodes(xpath = '//*[@class = "tv-screener__symbol"]') %>% html_text2() 
 sector <- sector[seq(2, length(sector), 2)]
 
 ## Table Data in 'td`` tags in HTML 
