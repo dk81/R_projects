@@ -158,6 +158,6 @@ newegg_laptops_df %>% arrange(Price) %>% head(10)
 # 10 Most Expensive ASUS & Acer America Laptops
 newegg_laptops_df %>% 
    filter(Brand %in% c('Acer America', 'ASUS')) %>%
-   arrange(desc(Price))
+   arrange(desc(Price)) %>% head(10)
 
 
